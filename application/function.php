@@ -1070,7 +1070,14 @@ function cache_write($filename, $values, $var = 'config', $format = false)
 {
     $cachefile = $filename;
     $cachetext = "<?php\r\n" . '$' . $var . '=' . arrayeval($values, $format) . ";";
-    return writefile($cachefile, $cachetext);
+    $result = writefile($cachefile, $cachetext);
+
+    // 清除Opcache缓存
+    if (function_exists('opcache_reset')) {
+        opcache_reset();
+    }
+
+    return $result;
 }
 
 /**
